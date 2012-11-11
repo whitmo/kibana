@@ -4,4 +4,7 @@
 # i.e. 'service apache2 start'
 
 initctl start kibana
-open-port 5601/tcp
+#open-port 5601/tcp
+sleep 10s
+service rinetd start
+open-port 80/tcp

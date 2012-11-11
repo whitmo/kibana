@@ -2,7 +2,8 @@
 Overview
 --------
 
-This charm provides kibana from (service homepage). Add a description here of what the service itself actually does. 
+This charm provides kibana from (http://kibana.org/). 
+Kibana is a search frontend for logstash.
 
 Usage
 -----
@@ -18,12 +19,19 @@ Usage
     juju add-relation kibana elasticsearch:rest
     juju expose kibana
 
-    browse to http://ip-address:5601 to begin searching.
+    browse to http://ip-address to begin searching.
 
 Configuration
 -------------
 
-nothing much special here.
+listens only on localhost:5601.   uses rinetd to redirect ip-addr:80 to localhost:5601.
+This should allow for haproxy etc to be used in front.
+Could configure apache reverse proxy in front if you want SSL / .htaccess
+
+Other
+-----
+
+* supports multiple ES servers in cluster.  This should help with balancing the load on ES and dealing with failure.
 
 
 Contact Information

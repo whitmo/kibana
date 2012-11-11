@@ -7,4 +7,6 @@
 # rm /srv/webroot/server-live.txt && sleep 30
 
 initctl stop kibana
-close-port 5601/tcp
+#close-port 5601/tcp
+service rinetd stop
+close-port 80/tcp

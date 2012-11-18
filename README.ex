@@ -33,6 +33,7 @@ Other
 
 * supports multiple ES servers in cluster.  This should help with balancing the load on ES and dealing with failure.
 
+* see logstash-indexer charm's README.md file for usage examples.
 
 Contact Information
 -------------------

@@ -15,7 +15,7 @@ juju-log "download and/or copy kibana tarball"
 if [ -f "files/charm/kibana-ruby.tar.gz" ]
   then
     juju-log "kibana binary found local,copy to /tmp"
-    install -o root -g root -m 0644 $HOME/files/charm/kibana-ruby.tar.gz /tmp/kibana-ruby.tar.gz
+    install -o root -g root -m 0644 files/charm/kibana-ruby.tar.gz /tmp/kibana-ruby.tar.gz
   else
     # Download and checksum
     juju-log "kibana binary not found local ... download"

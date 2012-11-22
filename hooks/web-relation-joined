@@ -5,3 +5,6 @@
 set -eux # -x for verbose logging to juju debug-log
 juju-log $JUJU_REMOTE_UNIT joined
 
+# Set ip/port for web relation
+relation-set port="80"
+relation-set host=`unit-get private-address`

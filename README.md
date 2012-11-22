@@ -5,10 +5,10 @@ Overview
 This charm provides kibana from (http://kibana.org/). 
 Kibana is a search frontend for logstash.
 
-Usage
------
+Using This Charm
+----------------
 
- instructions on using the charm:
+ using this charm :
     juju deploy kibana
     juju expose kibana
  not much use on its own ... you'll probably want the full stack
@@ -37,7 +37,6 @@ Other
 
 Contact Information
 -------------------
-
 
 Author: Paul Czarkowski <paul@paulcz.net>
 Report bugs at: http://bugs.launchpad.net/charms

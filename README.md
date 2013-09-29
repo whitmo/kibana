@@ -9,9 +9,12 @@ Using This Charm
 ----------------
 
  using this charm :
+
     juju deploy kibana
     juju expose kibana
+ 
  not much use on its own ... you'll probably want the full stack
+ 
     juju deploy elasticsearch
     juju deploy logstash-indexer
     juju add-relation logstash-indexer elasticsearch:cluster
@@ -19,7 +22,7 @@ Using This Charm
     juju add-relation kibana elasticsearch:rest
     juju expose kibana
 
-    browse to http://ip-address to begin searching.
+browse to http://ip-address to begin searching.
 
 Configuration
 -------------

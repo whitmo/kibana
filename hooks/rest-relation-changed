@@ -12,21 +12,19 @@ relation-get
 juju-log Relation members:
 relation-list
 
+echo "upstream es_cluster {"   > /etc/nginx/sites-available/es_cluster
+
 CLUSTER_NAME=`relation-get cluster-name`
 ES_HOST_LIST="none"
 for MEMBER in `relation-list`
 do
   ES_HOST=`relation-get private-address ${MEMBER}`
-  if [  ${ES_HOST_LIST} = "none" ]; then
-    ES_HOST_LIST="'${ES_HOST}:9200'"
-  else
-    ES_HOST_LIST=${ES_HOST_LIST},"'${ES_HOST}:9200'"
-  fi
+  echo "  server ${ES_HOST}:9200;" >> /etc/nginx/sites-available/es_cluster
 done
 
-juju-log "joined elasticsearch : ${CLUSTER_NAME} - hosts ${ES_HOST_LIST}"
-# host setting should ensure this works even when multicast discovery is broken
+echo "}" >> /etc/nginx/sites-available/es_cluster
 
-sed -i "s|Elasticsearch =.*|Elasticsearch = [ ${ES_HOST_LIST} ]|" /opt/kibana/KibanaConfig.rb
-initctl restart kibana
-service rinetd restart
+juju-log "modified list of ES hosts kibana can talk to :-"
+cat /etc/nginx/sites-available/es_cluster
+
+service nginx restart

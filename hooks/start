@@ -3,8 +3,6 @@
 # Note that currently this is run directly after install
 # i.e. 'service apache2 start'
 
-initctl start kibana
+initctl start nginx
 #open-port 5601/tcp
-sleep 10s
-service rinetd start
 open-port 80/tcp

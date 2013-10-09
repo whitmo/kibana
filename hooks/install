@@ -4,50 +4,33 @@
 # Make sure this hook exits cleanly and is idempotent, common problems here are failing to account for a debconf question on a dependency, or trying to pull from github without installing git first.
 set -eux # -x for verbose logging to juju debug-log
 HOME=$PWD
-CHECKSUM="fc290faf6967edad9f65b5182a2905c1"
+CHECKSUM="8614d80e8afdb9d936e8574b24e9b405"
 HOST=`unit-get private-address`
 
 juju-log "install dependency"
-apt-get install -y ruby curl wget rubygems rinetd
-service rinetd stop
+apt-get install -y curl wget git nginx
 
-juju-log "download and/or copy kibana tarball"
-if [ -f "files/charm/kibana-ruby.tar.gz" ]
-  then
-    juju-log "kibana binary found local,copy to /tmp"
-    install -o root -g root -m 0644 files/charm/kibana-ruby.tar.gz /tmp/kibana-ruby.tar.gz
-  else
-    # Download and checksum
-    juju-log "kibana binary not found local ... download"
-    wget -q -O /tmp/kibana-ruby.tar.gz "https://github.com/rashidkpc/Kibana/tarball/kibana-ruby"
-    uncomment if you want to checksum
-    #if [[ $(md5sum "/tmp/kibana-ruby.tar.gz " | cut -d " " -f 1) != ${CHECKSUM} ]]; then
-    #  juju-log --log-level CRITICAL "/tmp/kibana-ruby.tar.gz failed MD5 checksum"
-    #  exit 1
-    #fi
-  fi
+juju-log "download kibana from elasticsearch.org"
+wget -q -O /tmp/kibana-latest.tgz https://download.elasticsearch.org/kibana/kibana/kibana-latest.tar.gz
 
-juju-log "extract kibana tarball and moveto /opt/kibana"
-mkdir -p /opt/kibana
-cd /opt/kibana
-tar xzvf /tmp/kibana-ruby.tar.gz --strip=1 --show-transformed-names
-juju-log "install kibana required gems"
-sed -i "s|http://rubygems.org|https://rubygems.org|" /opt/kibana/Gemfile
-gem install bundler
-bundle install
-sed -i "s|KibanaHost =.*|KibanaHost = \"127.0.0.1\"|" /opt/kibana/KibanaConfig.rb
-cd $HOME
-juju-log "create kibana user"
-useradd kibana
-chown -R kibana. /opt/kibana
+install -o root -g root -m 0644 files/charm/nginx.conf /etc/nginx/sites-available/kibana
+install -o root -g root -m 0644 files/charm/nginx_lb.conf /etc/nginx/sites-available/es_cluster
 
-juju-log "Install upstart init script"
-install -o root -g root -m 0644 files/charm/kibana-service.conf /etc/init/kibana.conf
+pushd /usr/share
 
-# I want kibana to answer on port 80 ... using rinetd...  so I don't need to run as root.
-# Maybe I'll set up an apache reverse proxy to enable https at some point.
-juju-log "configure rinetd to push ${HOST}:80 traffic to localhost:5601"
-echo "${HOST} 80 127.0.0.1 5601" >> /etc/rinetd.conf
+tar xzvf /tmp/kibana-latest.tgz
+
+mv kibana-latest kibana3
+
+rm -f /etc/nginx/sites-enabled/default
+
+popd
+
+rm -f /usr/share/kibana3/config.js
+install -o root -g root -m 0644 files/charm/config.js /usr/share/kibana3/config.js
 
 
+ln -s /etc/nginx/sites-available/kibana /etc/nginx/sites-enabled/kibana
+ln -s /etc/nginx/sites-available/es_cluster /etc/nginx/sites-enabled/es_cluster
 
+service nginx restart

@@ -3,6 +3,8 @@ summary: alternative (better) logstash frontend
 maintainer: Paul Czarkowski <paul@paulcz.net>
 description: |
   alternative (better) logstash frontend
+categories:
+  - applications  
 provides:
   web:
     interface: kibana

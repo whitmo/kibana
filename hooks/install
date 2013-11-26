@@ -17,7 +17,7 @@ md5sum -c /tmp/kibana.tgz.md5
 install -o root -g root -m 0644 files/charm/nginx.conf /etc/nginx/sites-available/kibana
 install -o root -g root -m 0644 files/charm/nginx_lb.conf /etc/nginx/sites-available/es_cluster
 
-pushd /usr/share
+pushd /srv
 
 tar xzvf /tmp/kibana.tgz
 mv ${KIBANA_SOURCE_UNPACK_DIRECTORY} kibana3
@@ -26,8 +26,8 @@ rm -f /etc/nginx/sites-enabled/default
 
 popd
 
-rm -f /usr/share/kibana3/config.js
-install -o root -g root -m 0644 files/charm/config.js /usr/share/kibana3/config.js
+rm -f /srv/kibana3/config.js
+install -o root -g root -m 0644 files/charm/config.js /srv/kibana3/config.js
 
 
 ln -s /etc/nginx/sites-available/kibana /etc/nginx/sites-enabled/kibana

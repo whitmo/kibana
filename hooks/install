@@ -2,6 +2,7 @@
 set -eux 
 HOME=$PWD
 KIBANA_SOURCE=$(config-get kibana_source)
+KIBANA_SOURCE_UNPACK_DIRECTORY=$(config-get kibana_source_unpack_directory)
 KIBANA_SOURCE_CHECKSUM=$(config-get kibana_source_checksum)
 HOST=$(unit-get private-address)
 
@@ -19,6 +20,7 @@ install -o root -g root -m 0644 files/charm/nginx_lb.conf /etc/nginx/sites-avail
 pushd /usr/share
 
 tar xzvf /tmp/kibana.tgz
+mv ${KIBANA_SOURCE_UNPACK_DIRECTORY} kibana3
 
 rm -f /etc/nginx/sites-enabled/default
 

@@ -10,7 +10,7 @@ apt-get install -y curl wget git nginx
 
 juju-log "download kibana from elasticsearch.org"
 wget -q -O /tmp/kibana.tgz ${KIBANA_SOURCE}
-echo "${KIBANA_SOURCE_CHECKSUM} kibana.tgz" > /tmp/kibana.tgz.md5
+echo "${KIBANA_SOURCE_CHECKSUM}  /tmp/kibana.tgz" > /tmp/kibana.tgz.md5
 md5sum -c /tmp/kibana.tgz.md5
 
 install -o root -g root -m 0644 files/charm/nginx.conf /etc/nginx/sites-available/kibana

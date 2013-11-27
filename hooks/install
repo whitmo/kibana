@@ -1,33 +1,33 @@
 #!/bin/bash
-# Here do anything needed to install the service
-# i.e. apt-get install -y foo  or  bzr branch http://myserver/mycode /srv/webroot
-# Make sure this hook exits cleanly and is idempotent, common problems here are failing to account for a debconf question on a dependency, or trying to pull from github without installing git first.
-set -eux # -x for verbose logging to juju debug-log
+set -eux 
 HOME=$PWD
-CHECKSUM="8614d80e8afdb9d936e8574b24e9b405"
-HOST=`unit-get private-address`
+KIBANA_SOURCE=$(config-get kibana_source)
+KIBANA_SOURCE_UNPACK_DIRECTORY=$(config-get kibana_source_unpack_directory)
+KIBANA_SOURCE_CHECKSUM=$(config-get kibana_source_checksum)
+HOST=$(unit-get private-address)
 
 juju-log "install dependency"
 apt-get install -y curl wget git nginx
 
 juju-log "download kibana from elasticsearch.org"
-wget -q -O /tmp/kibana-latest.tgz https://download.elasticsearch.org/kibana/kibana/kibana-latest.tar.gz
+wget -q -O /tmp/kibana.tgz ${KIBANA_SOURCE}
+echo "${KIBANA_SOURCE_CHECKSUM}  /tmp/kibana.tgz" > /tmp/kibana.tgz.md5
+md5sum -c /tmp/kibana.tgz.md5
 
 install -o root -g root -m 0644 files/charm/nginx.conf /etc/nginx/sites-available/kibana
 install -o root -g root -m 0644 files/charm/nginx_lb.conf /etc/nginx/sites-available/es_cluster
 
-pushd /usr/share
+pushd /srv
 
-tar xzvf /tmp/kibana-latest.tgz
-
-mv kibana-latest kibana3
+tar xzvf /tmp/kibana.tgz
+mv ${KIBANA_SOURCE_UNPACK_DIRECTORY} kibana3
 
 rm -f /etc/nginx/sites-enabled/default
 
 popd
 
-rm -f /usr/share/kibana3/config.js
-install -o root -g root -m 0644 files/charm/config.js /usr/share/kibana3/config.js
+rm -f /srv/kibana3/config.js
+install -o root -g root -m 0644 files/charm/config.js /srv/kibana3/config.js
 
 
 ln -s /etc/nginx/sites-available/kibana /etc/nginx/sites-enabled/kibana

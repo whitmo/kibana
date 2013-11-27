@@ -1,0 +1,13 @@
+options:
+    kibana_source:
+        type: string
+        default: 'https://download.elasticsearch.org/kibana/kibana/kibana-3.0.0milestone4.tar.gz'
+        description: URL to download the source for kibana
+    kibana_source_unpack_directory:
+        type: string
+        default: 'kibana-3.0.0milestone4'
+        description: the name of the directory the tar.gz will unpack to
+    kibana_source_checksum:
+        type: string
+        default: '3ee5416c8a61fa95ba9280631a66997e'
+        description: the md5sum of the kibana_source
